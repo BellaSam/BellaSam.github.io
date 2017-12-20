@@ -232,6 +232,189 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/12/20/Hadoop-setup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BellaSam">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BellaSam's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/20/Hadoop-setup/" itemprop="url">Hadoop Setup</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-20T15:30:00+08:00">
+                2017-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technology/" itemprop="url" rel="index">
+                    <span itemprop="name">Technology</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Linux-VM-Creation"><a href="#Linux-VM-Creation" class="headerlink" title="Linux VM Creation"></a>Linux VM Creation</h2><p>阿里云</p>
+<h2 id="JAVA-Installation"><a href="#JAVA-Installation" class="headerlink" title="JAVA Installation"></a>JAVA Installation</h2><ol>
+<li>sudo apt-get install software-properties-common</li>
+<li>sudo add-apt-repository ppa:webupd8team/java</li>
+<li>sudo apt-get update</li>
+<li>sudo apt-get install oracle-java8-installer</li>
+<li><p>vi /etc/profile, add JAVA_HOME, JRE_HOME:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br><span class="line">export JRE_HOME=$JAVA_HOME/jre</span><br><span class="line">export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH</span><br><span class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>source /etc/profile</p>
+</li>
+</ol>
+<h2 id="Hadoop-Installation"><a href="#Hadoop-Installation" class="headerlink" title="Hadoop Installation"></a>Hadoop Installation</h2><ol>
+<li>wget <a href="https://archive.apache.org/dist/hadoop/common/hadoop-1.2.1/hadoop-1.2.1.tar.gz" target="_blank" rel="noopener">https://archive.apache.org/dist/hadoop/common/hadoop-1.2.1/hadoop-1.2.1.tar.gz</a></li>
+<li>mv hadoop-1.2.1.tar.gz /opt/</li>
+<li>cd /opt</li>
+<li>tar -zxvf hadoop-1.2.1.tar.gz</li>
+<li><p>vi /opt/conf/hadoop-env.sh, add JAVA_HOME</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>vi /opt/conf/core-site.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</span><br><span class="line">&lt;value&gt;/hadoop&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;dfs.name.dir&lt;/name&gt;</span><br><span class="line">&lt;value&gt;/hadoop/name&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;fs.default.name&lt;/name&gt;</span><br><span class="line">&lt;value&gt;hdfs://localhost:9000&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>vi /opt/conf/hdfs-site.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;dfs.data.dir&lt;/name&gt;</span><br><span class="line">&lt;value&gt;/hadoop/data&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>vi /opt/conf/mapred-site.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;mapred.job.tracker&lt;/name&gt;</span><br><span class="line">&lt;value&gt;localhost:9001&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>vi /etc/profile, add HADOOP_HOME</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br><span class="line">export JRE_HOME=$JAVA_HOME/jre</span><br><span class="line">export HADOOP_HOME=/opt/hadoop-1.2.1</span><br><span class="line">export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH</span><br><span class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$HADOOP_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>source /etc/profile</p>
+</li>
+<li>hadoop namenode -format</li>
+<li>cd /opt/hadoop-1.2.1/bin, run start-all.sh</li>
+<li><p>jps, check java thread</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/opt/hadoop-1.2.1/bin# jps</span><br><span class="line">1985 NameNode</span><br><span class="line">2531 Jps</span><br><span class="line">2253 SecondaryNameNode</span><br><span class="line">2333 JobTracker</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>check file system : hadoop fs -ls /</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/opt/hadoop-1.2.1/bin# hadoop fs -ls /</span><br><span class="line">Warning: $HADOOP_HOME is deprecated.</span><br><span class="line"></span><br><span class="line">Found 1 items</span><br><span class="line">drwxr-xr-x   - root supergroup          0 2017-12-20 15:23 /hadoop</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/11/23/Docker Command List - 1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -922,7 +1105,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
