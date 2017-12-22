@@ -232,6 +232,319 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/12/22/yarn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BellaSam">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BellaSam's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/22/yarn/" itemprop="url">YARN 工作原理简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-22T17:18:56+08:00">
+                2017-12-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technology/" itemprop="url" rel="index">
+                    <span itemprop="name">Technology</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="MRv1"><a href="#MRv1" class="headerlink" title="MRv1"></a>MRv1</h2><p><img src="/2017/12/22/yarn/MRv1.png" alt="MRv1的架构"><br>编程模型：Map阶段 + Reduce阶段<br>数据处理引擎：MapTask + ReduceTask<br>运行时环境：JobTracker(资源调度，作业控制，主) + TaskTracker(接受JT命令并具体执行，从)<br>局限性：<br>1) 扩展性差(JobTracker兼具资源管理及作业调度，容易负载过大)<br>2) 可靠性差(Master/Slave架构中，即主从架构中，Master的单点故障)<br>3) 资源利用率低(Slot资源分配模型，粗粒度，空闲资源表较多)<br>4) 无法支持多种计算平台(V1是 离线/批处理 计算框架)</p>
+<h2 id="MRv2"><a href="#MRv2" class="headerlink" title="MRv2"></a>MRv2</h2><p><img src="/2017/12/22/yarn/MRv2.png" alt="MRv2的架构"><br>编程模型，数据处理引擎 =&gt; 同 MRv1<br>运行时环境: MRv2是运行于YARN之上的MapReduce计算框架，YARN(资源管理+调度) + ApplicationMaster(作业控制，具体应用程序相关的任务切分、任务调度和容错等)</p>
+<p>note：相较于MRv1, MRv2把资源的调度和任务的调度完全分开了，大大减轻了原本单个JobTracker的压力，并且现在的’JobTracker’是多个并存的状态。</p>
+<p>YARN<br><img src="/2017/12/22/yarn/MRv1-2.png" alt="ss"><br><img src="/2017/12/22/yarn/MRv2-2.png" alt="ss"><br>支持多种计算框架的资源管理器<br>产生背景：轻量级计算平台<br>1）资源利用率高<br>2）运维成本低<br>3）数据共享</p>
+<h2 id="YARN基本组成结构："><a href="#YARN基本组成结构：" class="headerlink" title="YARN基本组成结构："></a>YARN基本组成结构：</h2><p><img src="/2017/12/22/yarn/YARN 基本组成结构.png" alt="ss"></p>
+<ol>
+<li>ResourceManager（主）：全局的资源管理器，负责整个集群的资源管理、分配与调度<br> -Scheduler：调度器，只用来调度资源，热插拔，与应用程序无关，默认是Fair Scheduler，可自定义</li>
+<li>NodeManager（从）：管理每一个slave上的资源和任务，作用包括：<br> 1) 定时向RM汇报HeartBeat(资源的使用情况和Container的运行状态)<br> 2) 接收来自AM的 启动/停止 请求</li>
+<li>Container：资源分配单位（MRv1中是Slot，槽），动态分配</li>
+<li>ApplicationMaster：每个APP都会包含一个AM, AM的功能包括：<br> 1) 向RM申请资源（用Container表示）<br> 2) 将任务做进一步分配<br> 3) 与Node Manager通信，启动/停止任务<br> 4) 跟踪每一个Task的运行状态(包括Failed后的操作)</li>
+</ol>
+<h2 id="YARN的通信协议："><a href="#YARN的通信协议：" class="headerlink" title="YARN的通信协议："></a>YARN的通信协议：</h2><p><img src="/2017/12/22/yarn/YARN 通信协议.png" alt="ss"><br>1） Client与RM之间的通信协议, ApplicationClientProtocol，作业的提交、应用程序的状态等<br>2） AM与RM通信协议，ApplicationMasterProtocol，向RM注册AM, 申请资源<br>3) AM与NM通信协议，ContainerManagementProtocol, 启动/停止 container<br>4） RM与NM通信协议，ResourceTracker, 汇报slave节点的资源信息，包括container的状态（运行状况）</p>
+<h2 id="YARN的工作流程："><a href="#YARN的工作流程：" class="headerlink" title="YARN的工作流程："></a>YARN的工作流程：</h2><p><img src="/2017/12/22/yarn/YARN 工作流程.png" alt="ss"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/12/21/WordCount/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BellaSam">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BellaSam's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/21/WordCount/" itemprop="url">Hadoop - WordCount</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T17:42:22+08:00">
+                2017-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technology/" itemprop="url" rel="index">
+                    <span itemprop="name">Technology</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Hadoop-Word-Count"><a href="#Hadoop-Word-Count" class="headerlink" title="Hadoop Word Count"></a>Hadoop Word Count</h2><ol>
+<li><p>create mapper python code : hdfs_map.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">def read_input(file):</span><br><span class="line">	for line in file:</span><br><span class="line">		yield line.split()</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">	data = read_input(sys.stdin)</span><br><span class="line"></span><br><span class="line">	for words in data:</span><br><span class="line">		for word in words:</span><br><span class="line">			print(&quot;%s%s%d&quot; % (word,&apos;\t&apos;,1))</span><br><span class="line"></span><br><span class="line">if _name_ == &apos;_main_&apos;:</span><br><span class="line">	main()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>create reducer python code : hdfs_reduce.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">from operator import itemgetter</span><br><span class="line">from itertools import groupby</span><br><span class="line"></span><br><span class="line">def read_mapper_output(file, separator=&apos;\t&apos;):</span><br><span class="line">	for line in file:</span><br><span class="line">		yield line.rstrip().split(separator,1)</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">	data = read_mapper_output(sys.stdin)</span><br><span class="line"></span><br><span class="line">	for current_word, group in groupby(data,itemgetter(0)):</span><br><span class="line">		total_count = sum(int(count) for current_word, count in group)</span><br><span class="line">		print(&quot;%s%s%d&quot; % (current_word, &apos;\t&apos;, total_count))</span><br><span class="line"></span><br><span class="line">if _name_==&apos;_main_&apos;:</span><br><span class="line">	main()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>create input file : test.txt, with sample text.</p>
+</li>
+<li><p>copy sample file into HDFS (no need copy python file): </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -copyFromLocal /***/test.txt /tmp/test/test.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>go to python file path, run command :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming-2.6.0-cdh5.7.0.jar -files &quot;hdfs_map.py,hdfs_reduce.py&quot;  -input /tmp/test/test.txt -output /tmp/test/wordCount  -mapper &quot;hdfs_map.py&quot; -reducer &quot;hdfs_reduce.py&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>check result</p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/12/21/Installation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -273,6 +586,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technology/" itemprop="url" rel="index">
+                    <span itemprop="name">Technology</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -1240,7 +1575,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1262,7 +1597,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hadoop,Cloudera," />
+  <meta name="keywords" content="Hadoop,Python," />
 
 
 
@@ -79,18 +79,26 @@
 
 
 
-<meta name="description" content="Cloudera QuickStart Installation - Docker Image docker pull cloudera/quickstart:latest Run Command : 12docker run --name clouder-quick -d --hostname=quickstart.">
-<meta name="keywords" content="Hadoop,Cloudera">
+<meta name="description" content="MRv1编程模型：Map阶段 + Reduce阶段数据处理引擎：MapTask + ReduceTask运行时环境：JobTracker(资源调度，作业控制，主) + TaskTracker(接受JT命令并具体执行，从)局限性：1) 扩展性差(JobTracker兼具资源管理及作业调度，容易负载过大)2) 可靠性差(M">
+<meta name="keywords" content="Hadoop,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cloudera QuickStart Installation">
-<meta property="og:url" content="http://bellasam.github.io/2017/12/21/Installation/index.html">
+<meta property="og:title" content="YARN 工作原理简介">
+<meta property="og:url" content="http://bellasam.github.io/2017/12/22/yarn/index.html">
 <meta property="og:site_name" content="BellaSam&#39;s Blog">
-<meta property="og:description" content="Cloudera QuickStart Installation - Docker Image docker pull cloudera/quickstart:latest Run Command : 12docker run --name clouder-quick -d --hostname=quickstart.cloudera --privileged=true -t -i 4239cd2">
+<meta property="og:description" content="MRv1编程模型：Map阶段 + Reduce阶段数据处理引擎：MapTask + ReduceTask运行时环境：JobTracker(资源调度，作业控制，主) + TaskTracker(接受JT命令并具体执行，从)局限性：1) 扩展性差(JobTracker兼具资源管理及作业调度，容易负载过大)2) 可靠性差(Master/Slave架构中，即主从架构中，Master的单点故障)3) 资源利">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-12-21T09:45:16.000Z">
+<meta property="og:image" content="http://bellasam.github.io/2017/12/22/yarn/MRv1.png">
+<meta property="og:image" content="http://bellasam.github.io/2017/12/22/yarn/MRv2.png">
+<meta property="og:image" content="http://bellasam.github.io/2017/12/22/yarn/MRv1-2.png">
+<meta property="og:image" content="http://bellasam.github.io/2017/12/22/yarn/MRv2-2.png">
+<meta property="og:image" content="http://bellasam.github.io/2017/12/22/yarn/YARN%20基本组成结构.png">
+<meta property="og:image" content="http://bellasam.github.io/2017/12/22/yarn/YARN%20通信协议.png">
+<meta property="og:image" content="http://bellasam.github.io/2017/12/22/yarn/YARN%20工作流程.png">
+<meta property="og:updated_time" content="2017-12-22T09:24:55.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cloudera QuickStart Installation">
-<meta name="twitter:description" content="Cloudera QuickStart Installation - Docker Image docker pull cloudera/quickstart:latest Run Command : 12docker run --name clouder-quick -d --hostname=quickstart.cloudera --privileged=true -t -i 4239cd2">
+<meta name="twitter:title" content="YARN 工作原理简介">
+<meta name="twitter:description" content="MRv1编程模型：Map阶段 + Reduce阶段数据处理引擎：MapTask + ReduceTask运行时环境：JobTracker(资源调度，作业控制，主) + TaskTracker(接受JT命令并具体执行，从)局限性：1) 扩展性差(JobTracker兼具资源管理及作业调度，容易负载过大)2) 可靠性差(Master/Slave架构中，即主从架构中，Master的单点故障)3) 资源利">
+<meta name="twitter:image" content="http://bellasam.github.io/2017/12/22/yarn/MRv1.png">
 
 
 
@@ -120,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://bellasam.github.io/2017/12/21/Installation/"/>
+  <link rel="canonical" href="http://bellasam.github.io/2017/12/22/yarn/"/>
 
 
 
 
 
-  <title>Cloudera QuickStart Installation | BellaSam's Blog</title>
+  <title>YARN 工作原理简介 | BellaSam's Blog</title>
   
 
 
@@ -233,7 +241,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/12/21/Installation/">
+    <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/12/22/yarn/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="BellaSam">
@@ -250,7 +258,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Cloudera QuickStart Installation</h1>
+          <h1 class="post-title" itemprop="name headline">YARN 工作原理简介</h1>
         
 
         <div class="post-meta">
@@ -262,8 +270,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T11:14:44+08:00">
-                2017-12-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-22T17:18:56+08:00">
+                2017-12-22
               </time>
             
 
@@ -322,22 +330,19 @@
       
 
       
-        <h2 id="Cloudera-QuickStart-Installation-Docker-Image"><a href="#Cloudera-QuickStart-Installation-Docker-Image" class="headerlink" title="Cloudera QuickStart Installation - Docker Image"></a>Cloudera QuickStart Installation - Docker Image</h2><ol>
-<li>docker pull cloudera/quickstart:latest</li>
-<li><p>Run Command :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --name clouder-quick -d --hostname=quickstart.cloudera --privileged=true -t -i 4239cd2958c6(image ID) /usr/bin/docker-quickstart</span><br><span class="line">note : no need set port</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>docker exec -it clouder-quick bash</p>
-</li>
-<li>jps</li>
-<li>check hdfs path : hdfs dfs -ls /<br>if issue happened: <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Call From quickstart.cloudera/172.17.0.2 to quickstart.cloudera:8020 failed on connection exception: java.net.ConnectException: Connection refused;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>you need:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">check name node status : service hadoop-hdfs-namenode status</span><br><span class="line">restart if needed : service hadoop-hdfs-namenode restart</span><br></pre></td></tr></table></figure></p>
+        <h2 id="MRv1"><a href="#MRv1" class="headerlink" title="MRv1"></a>MRv1</h2><p><img src="/2017/12/22/yarn/MRv1.png" alt="MRv1的架构"><br>编程模型：Map阶段 + Reduce阶段<br>数据处理引擎：MapTask + ReduceTask<br>运行时环境：JobTracker(资源调度，作业控制，主) + TaskTracker(接受JT命令并具体执行，从)<br>局限性：<br>1) 扩展性差(JobTracker兼具资源管理及作业调度，容易负载过大)<br>2) 可靠性差(Master/Slave架构中，即主从架构中，Master的单点故障)<br>3) 资源利用率低(Slot资源分配模型，粗粒度，空闲资源表较多)<br>4) 无法支持多种计算平台(V1是 离线/批处理 计算框架)</p>
+<h2 id="MRv2"><a href="#MRv2" class="headerlink" title="MRv2"></a>MRv2</h2><p><img src="/2017/12/22/yarn/MRv2.png" alt="MRv2的架构"><br>编程模型，数据处理引擎 =&gt; 同 MRv1<br>运行时环境: MRv2是运行于YARN之上的MapReduce计算框架，YARN(资源管理+调度) + ApplicationMaster(作业控制，具体应用程序相关的任务切分、任务调度和容错等)</p>
+<p>note：相较于MRv1, MRv2把资源的调度和任务的调度完全分开了，大大减轻了原本单个JobTracker的压力，并且现在的’JobTracker’是多个并存的状态。</p>
+<p>YARN<br><img src="/2017/12/22/yarn/MRv1-2.png" alt="ss"><br><img src="/2017/12/22/yarn/MRv2-2.png" alt="ss"><br>支持多种计算框架的资源管理器<br>产生背景：轻量级计算平台<br>1）资源利用率高<br>2）运维成本低<br>3）数据共享</p>
+<h2 id="YARN基本组成结构："><a href="#YARN基本组成结构：" class="headerlink" title="YARN基本组成结构："></a>YARN基本组成结构：</h2><p><img src="/2017/12/22/yarn/YARN 基本组成结构.png" alt="ss"></p>
 <ol>
-<li>test command: <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -copyFromLocal /test.txt /</span><br><span class="line">hdfs dfs -copyToLocal /test.txt /</span><br></pre></td></tr></table></figure>
-</li>
+<li>ResourceManager（主）：全局的资源管理器，负责整个集群的资源管理、分配与调度<br> -Scheduler：调度器，只用来调度资源，热插拔，与应用程序无关，默认是Fair Scheduler，可自定义</li>
+<li>NodeManager（从）：管理每一个slave上的资源和任务，作用包括：<br> 1) 定时向RM汇报HeartBeat(资源的使用情况和Container的运行状态)<br> 2) 接收来自AM的 启动/停止 请求</li>
+<li>Container：资源分配单位（MRv1中是Slot，槽），动态分配</li>
+<li>ApplicationMaster：每个APP都会包含一个AM, AM的功能包括：<br> 1) 向RM申请资源（用Container表示）<br> 2) 将任务做进一步分配<br> 3) 与Node Manager通信，启动/停止任务<br> 4) 跟踪每一个Task的运行状态(包括Failed后的操作)</li>
 </ol>
+<h2 id="YARN的通信协议："><a href="#YARN的通信协议：" class="headerlink" title="YARN的通信协议："></a>YARN的通信协议：</h2><p><img src="/2017/12/22/yarn/YARN 通信协议.png" alt="ss"><br>1） Client与RM之间的通信协议, ApplicationClientProtocol，作业的提交、应用程序的状态等<br>2） AM与RM通信协议，ApplicationMasterProtocol，向RM注册AM, 申请资源<br>3) AM与NM通信协议，ContainerManagementProtocol, 启动/停止 container<br>4） RM与NM通信协议，ResourceTracker, 汇报slave节点的资源信息，包括container的状态（运行状况）</p>
+<h2 id="YARN的工作流程："><a href="#YARN的工作流程：" class="headerlink" title="YARN的工作流程："></a>YARN的工作流程：</h2><p><img src="/2017/12/22/yarn/YARN 工作流程.png" alt="ss"></p>
 
       
     </div>
@@ -357,7 +362,7 @@
           
             <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
           
-            <a href="/tags/Cloudera/" rel="tag"># Cloudera</a>
+            <a href="/tags/Python/" rel="tag"># Python</a>
           
         </div>
       
@@ -370,8 +375,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/20/Hadoop-setup/" rel="next" title="Hadoop Setup">
-                <i class="fa fa-chevron-left"></i> Hadoop Setup
+              <a href="/2017/12/21/WordCount/" rel="next" title="Hadoop - WordCount">
+                <i class="fa fa-chevron-left"></i> Hadoop - WordCount
               </a>
             
           </div>
@@ -379,10 +384,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/12/21/WordCount/" rel="prev" title="Hadoop - WordCount">
-                Hadoop - WordCount <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -516,7 +517,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cloudera-QuickStart-Installation-Docker-Image"><span class="nav-number">1.</span> <span class="nav-text">Cloudera QuickStart Installation - Docker Image</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MRv1"><span class="nav-number">1.</span> <span class="nav-text">MRv1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MRv2"><span class="nav-number">2.</span> <span class="nav-text">MRv2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YARN基本组成结构："><span class="nav-number">3.</span> <span class="nav-text">YARN基本组成结构：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YARN的通信协议："><span class="nav-number">4.</span> <span class="nav-text">YARN的通信协议：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YARN的工作流程："><span class="nav-number">5.</span> <span class="nav-text">YARN的工作流程：</span></a></li></ol></div>
             
 
           </div>

@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hadoop,Cloudera," />
+  <meta name="keywords" content="Hadoop,Python," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Cloudera QuickStart Installation - Docker Image docker pull cloudera/quickstart:latest Run Command : 12docker run --name clouder-quick -d --hostname=quickstart.">
-<meta name="keywords" content="Hadoop,Cloudera">
+<meta name="description" content="Hadoop Word Count create mapper python code : hdfs_map.py 1234567891011121314import sysdef read_input(file):	for line in file:		yield line.split()def main():	da">
+<meta name="keywords" content="Hadoop,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cloudera QuickStart Installation">
-<meta property="og:url" content="http://bellasam.github.io/2017/12/21/Installation/index.html">
+<meta property="og:title" content="Hadoop - WordCount">
+<meta property="og:url" content="http://bellasam.github.io/2017/12/21/WordCount/index.html">
 <meta property="og:site_name" content="BellaSam&#39;s Blog">
-<meta property="og:description" content="Cloudera QuickStart Installation - Docker Image docker pull cloudera/quickstart:latest Run Command : 12docker run --name clouder-quick -d --hostname=quickstart.cloudera --privileged=true -t -i 4239cd2">
+<meta property="og:description" content="Hadoop Word Count create mapper python code : hdfs_map.py 1234567891011121314import sysdef read_input(file):	for line in file:		yield line.split()def main():	data = read_input(sys.stdin)	for words in">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-12-21T09:45:16.000Z">
+<meta property="og:updated_time" content="2017-12-21T09:45:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cloudera QuickStart Installation">
-<meta name="twitter:description" content="Cloudera QuickStart Installation - Docker Image docker pull cloudera/quickstart:latest Run Command : 12docker run --name clouder-quick -d --hostname=quickstart.cloudera --privileged=true -t -i 4239cd2">
+<meta name="twitter:title" content="Hadoop - WordCount">
+<meta name="twitter:description" content="Hadoop Word Count create mapper python code : hdfs_map.py 1234567891011121314import sysdef read_input(file):	for line in file:		yield line.split()def main():	data = read_input(sys.stdin)	for words in">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://bellasam.github.io/2017/12/21/Installation/"/>
+  <link rel="canonical" href="http://bellasam.github.io/2017/12/21/WordCount/"/>
 
 
 
 
 
-  <title>Cloudera QuickStart Installation | BellaSam's Blog</title>
+  <title>Hadoop - WordCount | BellaSam's Blog</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/12/21/Installation/">
+    <link itemprop="mainEntityOfPage" href="http://bellasam.github.io/2017/12/21/WordCount/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="BellaSam">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Cloudera QuickStart Installation</h1>
+          <h1 class="post-title" itemprop="name headline">Hadoop - WordCount</h1>
         
 
         <div class="post-meta">
@@ -262,7 +262,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T11:14:44+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T17:42:22+08:00">
                 2017-12-21
               </time>
             
@@ -322,20 +322,22 @@
       
 
       
-        <h2 id="Cloudera-QuickStart-Installation-Docker-Image"><a href="#Cloudera-QuickStart-Installation-Docker-Image" class="headerlink" title="Cloudera QuickStart Installation - Docker Image"></a>Cloudera QuickStart Installation - Docker Image</h2><ol>
-<li>docker pull cloudera/quickstart:latest</li>
-<li><p>Run Command :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --name clouder-quick -d --hostname=quickstart.cloudera --privileged=true -t -i 4239cd2958c6(image ID) /usr/bin/docker-quickstart</span><br><span class="line">note : no need set port</span><br></pre></td></tr></table></figure>
+        <h2 id="Hadoop-Word-Count"><a href="#Hadoop-Word-Count" class="headerlink" title="Hadoop Word Count"></a>Hadoop Word Count</h2><ol>
+<li><p>create mapper python code : hdfs_map.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">def read_input(file):</span><br><span class="line">	for line in file:</span><br><span class="line">		yield line.split()</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">	data = read_input(sys.stdin)</span><br><span class="line"></span><br><span class="line">	for words in data:</span><br><span class="line">		for word in words:</span><br><span class="line">			print(&quot;%s%s%d&quot; % (word,&apos;\t&apos;,1))</span><br><span class="line"></span><br><span class="line">if _name_ == &apos;_main_&apos;:</span><br><span class="line">	main()</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>docker exec -it clouder-quick bash</p>
+<li><p>create reducer python code : hdfs_reduce.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">from operator import itemgetter</span><br><span class="line">from itertools import groupby</span><br><span class="line"></span><br><span class="line">def read_mapper_output(file, separator=&apos;\t&apos;):</span><br><span class="line">	for line in file:</span><br><span class="line">		yield line.rstrip().split(separator,1)</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">	data = read_mapper_output(sys.stdin)</span><br><span class="line"></span><br><span class="line">	for current_word, group in groupby(data,itemgetter(0)):</span><br><span class="line">		total_count = sum(int(count) for current_word, count in group)</span><br><span class="line">		print(&quot;%s%s%d&quot; % (current_word, &apos;\t&apos;, total_count))</span><br><span class="line"></span><br><span class="line">if _name_==&apos;_main_&apos;:</span><br><span class="line">	main()</span><br></pre></td></tr></table></figure>
 </li>
-<li>jps</li>
-<li>check hdfs path : hdfs dfs -ls /<br>if issue happened: <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Call From quickstart.cloudera/172.17.0.2 to quickstart.cloudera:8020 failed on connection exception: java.net.ConnectException: Connection refused;</span><br></pre></td></tr></table></figure>
+<li><p>create input file : test.txt, with sample text.</p>
 </li>
-</ol>
-<p>you need:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">check name node status : service hadoop-hdfs-namenode status</span><br><span class="line">restart if needed : service hadoop-hdfs-namenode restart</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li>test command: <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -copyFromLocal /test.txt /</span><br><span class="line">hdfs dfs -copyToLocal /test.txt /</span><br></pre></td></tr></table></figure>
+<li><p>copy sample file into HDFS (no need copy python file): </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -copyFromLocal /***/test.txt /tmp/test/test.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>go to python file path, run command :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming-2.6.0-cdh5.7.0.jar -files &quot;hdfs_map.py,hdfs_reduce.py&quot;  -input /tmp/test/test.txt -output /tmp/test/wordCount  -mapper &quot;hdfs_map.py&quot; -reducer &quot;hdfs_reduce.py&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>check result</p>
 </li>
 </ol>
 
@@ -357,7 +359,7 @@
           
             <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
           
-            <a href="/tags/Cloudera/" rel="tag"># Cloudera</a>
+            <a href="/tags/Python/" rel="tag"># Python</a>
           
         </div>
       
@@ -370,8 +372,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/20/Hadoop-setup/" rel="next" title="Hadoop Setup">
-                <i class="fa fa-chevron-left"></i> Hadoop Setup
+              <a href="/2017/12/21/Installation/" rel="next" title="Cloudera QuickStart Installation">
+                <i class="fa fa-chevron-left"></i> Cloudera QuickStart Installation
               </a>
             
           </div>
@@ -380,8 +382,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/12/21/WordCount/" rel="prev" title="Hadoop - WordCount">
-                Hadoop - WordCount <i class="fa fa-chevron-right"></i>
+              <a href="/2017/12/22/yarn/" rel="prev" title="YARN 工作原理简介">
+                YARN 工作原理简介 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -516,7 +518,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cloudera-QuickStart-Installation-Docker-Image"><span class="nav-number">1.</span> <span class="nav-text">Cloudera QuickStart Installation - Docker Image</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hadoop-Word-Count"><span class="nav-number">1.</span> <span class="nav-text">Hadoop Word Count</span></a></li></ol></div>
             
 
           </div>
